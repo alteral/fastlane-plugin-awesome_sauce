@@ -1,0 +1,19 @@
+lane :awesome_lane do
+  sum = plus(x: 1, y: 1) * minus(x: 4, y: 2)
+  say(text: "The result is: #{sum}")
+end
+
+lane :release do
+  version_path = '../lib/fastlane/plugin/awesome_sauce/version.rb'
+  release_version = File.read(version_path).scan(/\d+/).join('.')
+  sh('rake build')
+  set_github_release(
+    repository_name: 'alteral/fastlane-plugin-awesome_sauce',
+    api_token: ENV['GITHUB_TOKEN'],
+    name: "Awesome Sauce v#{release_version}",
+    tag_name: "v#{release_version}",
+    description: "v#{release_version}",
+    commitish: git_branch,
+    upload_assets: ["pkg/fastlane-plugin-awesome_sauce-#{release_version}.gem"]
+  )
+end
